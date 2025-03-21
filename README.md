@@ -1,4 +1,4 @@
-# Remix + Astro + Hono Boilerplate
+# Hono + Astro + React Router v7 Boilerplate
 
 This is a boilerplate for building web applications with [Remix](https://remix.run), [Astro](https://astro.build) and [Hono](https://hono.dev).
 
@@ -16,14 +16,15 @@ This is a boilerplate for building web applications with [Remix](https://remix.r
   - [x] Minio
   - [x] Auth (via Lucia)
   - [x] Stripe
-    - [x]
+    - [x] Server-side Webhooks
+    - [x] Stripe Checkout + Billing Portal
   - [ ] Emails (via Resend / Nodemailer)
     - [x] Magic Link / OTP
     - [x] Welcome Email after Subscription
 - Client side tech stack:
   - [x] TailwindCSS
   - [x] shadcn/ui
-  - [x] react-router v7 (aka Remix v3, for app)
+  - [x] react-router v7
   - [x] Astro (for static content)
     - [x] Landing Page
       - [x] Hero
@@ -40,6 +41,17 @@ This is a boilerplate for building web applications with [Remix](https://remix.r
   - [x] BiomeJS (for linting and formatting)
   - [x] tsup (for server code bundling)
 
+### Repository Structure
+
+I do not opt for using any monorepo setup because it is very complicated to run and deploy. All code resides in the same repository, with the following structure:
+
+- `/app` - App code (React Router)
+- `/content` - Static content (blog, docs)
+- `/migrations` - DrizzleORM migrations
+- `/public` - Public assets
+- `/server` - Hono server code
+- `/site` - Astro code (with minimal amount of simple react components that are used strictly by Astro and not by the webapp)
+
 ### Why Hono?
 
 Hono has a lot of modern features that make it better than plain express (which I used to use) for building backend for any application (web, native app, API SaaS):
@@ -55,6 +67,14 @@ Hono has a lot of modern features that make it better than plain express (which 
 
 BullMQ is a Redis-backed task queue and it provides a lot of important functionalities for building a scalable application at the start. At the age of AI, it is increasingly common to run long-running tasks in the background (LLM request chains), handle rate-limiting, running I/O intensive tasks in JS via horizontal scaling, and even interop with Python code. BullMQ unlocks all the possibilities.
 
-### Why Remix + Astro?
+### Why Astro + React-router v7?
 
-Remix (React-router v7) is used as SSR frontend for the web-app. Having a server-side rendered application frontend is safer and easier to manage states. At the time of writing, React-router v7 just released and does not have strong static generation library / framework available even if the feature is provided, so Astro is added alongside of the project to handle static content. Landing page, blog and documentations are all handled by Astro.
+React Router v7 is used for the web-app, alongside of Astro for static content (landing page, blog, docs). At the time of writing, React-router v7 provides framework mode (aka Remix) and also provides server-side rendering and static prerendering. However, the static content generation is barebones and requires a lot of thought to bring up to speed with Astro. Astro SSR is turned on only for dynamic paths (`/app/*`) that is taken over by React Router on the client side. Astro and Hono is not served and integrated in the same project yet, and currently Astro is configured to be deployed on Cloudflare.
+
+After over 1 year of maintenance with production grade apps, I found that if the webapp is complex, it is best to keep the app client-side only because this can ensure that the page transitions are fast after the initial load. SSR is nice only when the server-side logic is complex and the rendering is simple. Most of the web applications I work with do not fall into this category anymore.
+
+By doing code split like this, I can also look into re-using the React Router frontend for native mobile apps via Capacitor JS. This is a future plan.
+
+### Authentication
+
+Authentication is done with Lucia's best practices (Lucia is no longer a library) using server-side sessions served via Cookies. Cookie is used and shared across domains between the site and the API server. So it is best to host the server under a subdomain and the site under the main domain.

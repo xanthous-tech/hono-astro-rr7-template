@@ -9,7 +9,6 @@ import { getCookie } from 'hono/cookie';
 import { eq, and } from 'drizzle-orm';
 
 import { APP_URL, IS_PROD } from '@/config/server';
-import { logger as parentLogger } from '@/utils/logger';
 import { Cookie } from '@/utils/cookie';
 import { generateIdFromEntropySize } from '@/utils/crypto';
 import { db } from '@/db/drizzle';
@@ -20,8 +19,6 @@ export interface GitHubUser {
   id: string;
   login: string;
 }
-
-const logger = parentLogger.child({ middleware: 'github-auth' });
 
 export const github = new GitHub(
   process.env.GITHUB_CLIENT_ID ?? 'invalidClientId',
@@ -130,6 +127,7 @@ githubAuthRouter.get('/login', async (c) => {
 });
 
 githubAuthRouter.get('/callback', async (c) => {
+  const { logger } = c.var;
   const code = c.req.query('code');
   const state = c.req.query('state');
 

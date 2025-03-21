@@ -8,7 +8,8 @@ import {
   validateSession,
 } from '@/lib/auth';
 
-import { githubAuthRouter } from './github';
+import { googleAuthRouter } from './google';
+import { magicLinkAuthRouter } from './magic-link';
 
 export * from './bull-board';
 
@@ -41,7 +42,7 @@ export const authMiddleware = createMiddleware(async (c, next) => {
 
 export const authCheckMiddleware = createMiddleware(async (c, next) => {
   if (!c.var.session || !c.var.user) {
-    return c.text('Unauthorized', 401);
+    return c.json({ error: 'Unauthorized' }, 401);
   }
 
   return next();
@@ -49,4 +50,5 @@ export const authCheckMiddleware = createMiddleware(async (c, next) => {
 
 export const authRouter = new Hono();
 
-authRouter.route('/github', githubAuthRouter);
+authRouter.route('/google', googleAuthRouter);
+authRouter.route('/magic-link', magicLinkAuthRouter);

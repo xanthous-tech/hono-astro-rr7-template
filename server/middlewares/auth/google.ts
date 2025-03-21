@@ -9,8 +9,7 @@ import { Hono } from 'hono';
 import { getCookie } from 'hono/cookie';
 import { eq, and } from 'drizzle-orm';
 
-import { APP_URL, IS_PROD } from '@/config/server';
-import { logger as parentLogger } from '@/utils/logger';
+import { API_URL, APP_URL, IS_PROD } from '@/config/server';
 import { Cookie } from '@/utils/cookie';
 import { generateIdFromEntropySize } from '@/utils/crypto';
 import { db } from '@/db/drizzle';
@@ -26,12 +25,10 @@ export interface GoogleUser {
   picture: string;
 }
 
-const logger = parentLogger.child({ middleware: 'google-auth' });
-
 export const google = new Google(
   process.env.GOOGLE_CLIENT_ID ?? 'invalidClientId',
   process.env.GOOGLE_CLIENT_SECRET ?? 'invalidClientSecret',
-  `${APP_URL}/api/auth/google/callback`,
+  `${API_URL}/api/auth/google/callback`,
 );
 
 export const googleAuthRouter = new Hono();
@@ -100,7 +97,7 @@ async function getSessionCookieFromGoogleUser(googleUser: GoogleUser) {
 
       const stripeCustomer = await createStripeCustomer(
         userId,
-        googleUser.email,
+        googleUser.name,
         googleUser.email,
       );
 
@@ -112,6 +109,15 @@ async function getSessionCookieFromGoogleUser(googleUser: GoogleUser) {
           email: googleUser.email,
           image: googleUser.picture,
           customerId: stripeCustomer.id,
+        })
+        .onConflictDoUpdate({
+          target: [userTable.email],
+          set: {
+            name: googleUser.name,
+            email: googleUser.email,
+            image: googleUser.picture,
+            customerId: stripeCustomer.id,
+          },
         })
         .returning();
 
@@ -166,6 +172,7 @@ googleAuthRouter.get('/login', async (c) => {
 });
 
 googleAuthRouter.get('/callback', async (c) => {
+  const { logger } = c.var;
   const code = c.req.query('code');
   const state = c.req.query('state');
 
@@ -195,7 +202,7 @@ googleAuthRouter.get('/callback', async (c) => {
 
     c.header('Set-Cookie', cookie.serialize(), { append: true });
 
-    return c.redirect(callbackUrl);
+    return c.redirect(`${APP_URL}/app${callbackUrl}`);
   } catch (e) {
     logger.error(e);
     if (

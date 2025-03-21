@@ -183,6 +183,7 @@ appleAuthRouter.post(
     }),
   ),
   async (c) => {
+    const { logger } = c.var;
     const body = c.req.valid('json');
     logger.info(body);
 
@@ -204,6 +205,7 @@ appleAuthRouter.post(
 );
 
 appleAuthRouter.post('/callback', async (c) => {
+  const { logger } = c.var;
   const body = await c.req.parseBody();
   const { code, state, user: userJsonString } = body;
 

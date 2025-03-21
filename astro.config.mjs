@@ -3,10 +3,9 @@ import { defineConfig } from "astro/config";
 
 import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
-import tailwind from "@astrojs/tailwind";
 import sitemap from "@astrojs/sitemap";
-
 import starlight from "@astrojs/starlight";
+import tailwindcss from "@tailwindcss/vite";
 
 // https://astro.build/config
 export default defineConfig({
@@ -18,12 +17,12 @@ export default defineConfig({
     defaultLocale: "en",
   },
   trailingSlash: "never",
+  vite: {
+    plugins: [tailwindcss()],
+  },
   integrations: [
     react({
       experimentalReactChildren: true,
-    }),
-    tailwind({
-      applyBaseStyles: false,
     }),
     starlight({
       title: "Product Documentation",

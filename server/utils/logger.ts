@@ -1,5 +1,5 @@
+import { pinoLogger } from 'hono-pino';
 import pino from 'pino';
-import pinoHttp from 'pino-http';
 
 const transport = pino.transport(
   process.env.NODE_ENV === 'development'
@@ -28,6 +28,6 @@ export const logger = pino(
   transport,
 );
 
-export const httpLogger = pinoHttp({
-  logger: logger.child({ component: 'http' }),
+export const httpLogger = pinoLogger({
+  pino: logger.child({ component: 'http' }),
 });

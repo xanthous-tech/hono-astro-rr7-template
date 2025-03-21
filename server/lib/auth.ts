@@ -8,7 +8,7 @@ import {
   type CookieAttributes,
   CookieController,
 } from '@/utils/cookie';
-import { IS_PROD } from '@/config/server';
+import { COOKIE_DOMAIN } from '@/config/server';
 import { db } from '@/db/drizzle';
 import { userTable, sessionTable, type User, type Session } from '@/db/schema';
 
@@ -19,11 +19,15 @@ const ALMOST_EXPIRE_TIME = new TimeSpan(15, 'd'); // 15 days
 
 const sessionCookieName = 'auth_session';
 const baseSessionCookieAttributes: CookieAttributes = {
-  httpOnly: true,
+  domain: COOKIE_DOMAIN,
+  // httpOnly sets to false because we want client side to be able to see the session token
+  // FIXME: maybe set up an endpoint to check for auth status and hide the session token
+  httpOnly: false,
   secure: true,
   sameSite: 'lax',
   path: '/',
 };
+
 const sessionCookieController = new CookieController(
   sessionCookieName,
   baseSessionCookieAttributes,
@@ -108,14 +112,4 @@ export function createSessionCookie(session: Session): Cookie {
 export function readSessionCookie(cookieHeader: string): string | null {
   const sessionId = sessionCookieController.parse(cookieHeader);
   return sessionId;
-}
-
-export function createCallbackUrlCookie(callbackUrl: string) {
-  return new Cookie('auth_callback_url', callbackUrl, {
-    path: '/',
-    secure: IS_PROD,
-    httpOnly: true,
-    maxAge: 60 * 10,
-    sameSite: 'none',
-  });
 }

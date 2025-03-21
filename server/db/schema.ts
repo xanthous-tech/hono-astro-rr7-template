@@ -6,7 +6,7 @@ import {
   integer,
   varchar,
 } from 'drizzle-orm/pg-core';
-import type { InferSelectModel } from 'drizzle-orm';
+import { type InferSelectModel } from 'drizzle-orm';
 
 import { Role } from '@/types/roles';
 
@@ -31,7 +31,7 @@ export const userTable = pgTable('user', {
   name: text('name'),
   image: text('image'),
   customerId: text('customer_id'),
-  roleLevel: integer('role_level').default(Role.User),
+  roleLevel: integer('role_level').notNull().default(Role.User),
   createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' })
     .defaultNow()
     .notNull(),
@@ -80,9 +80,27 @@ export const subscriptionTable = pgTable('subscription', {
     .references(() => userTable.id),
   customerId: text('customer_id').notNull(),
   status: text('status').notNull(),
+  plan: text('plan').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' })
     .defaultNow()
     .notNull(),
 });
 
 export type Subscription = InferSelectModel<typeof subscriptionTable>;
+
+export const quotaTable = pgTable('quota', {
+  id: varchar('id').primaryKey().notNull(),
+  userId: text('user_id')
+    .notNull()
+    .references(() => userTable.id),
+  limit: integer('limit').notNull(),
+  used: integer('used').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' })
+    .defaultNow()
+    .notNull(),
+});
+
+export type Quota = InferSelectModel<typeof quotaTable>;

@@ -6,7 +6,7 @@ export const bullBoardAuthMiddleware = createMiddleware(async (c, next) => {
   const { user } = c.var;
 
   // need to be an admin to access bull-board
-  if (!user || user.roleLevel < Role.SuperAdmin) {
+  if (!user || (user.roleLevel ?? 0) < Role.SuperAdmin) {
     return c.text('Unauthorized', 401);
   }
 

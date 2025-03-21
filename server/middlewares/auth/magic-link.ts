@@ -2,15 +2,13 @@ import { Hono } from 'hono';
 import { getCookie } from 'hono/cookie';
 import { eq } from 'drizzle-orm';
 
-import { logger as parentLogger } from '@/utils/logger';
+import { APP_URL } from '@/config/server';
 import { generateIdFromEntropySize } from '@/utils/crypto';
 import { getMagicLinkTokenById } from '@/utils/magic-link';
 import { createStripeCustomer } from '@/lib/stripe';
 import { db } from '@/db/drizzle';
 import { userTable } from '@/db/schema';
 import { createSession, createSessionCookie } from '@/lib/auth';
-
-const logger = parentLogger.child({ middleware: 'magic-link-auth' });
 
 export const magicLinkAuthRouter = new Hono();
 
@@ -52,6 +50,7 @@ async function getSessionCookieByMagicLinkToken(token: string) {
 }
 
 magicLinkAuthRouter.get('/:token', async (c) => {
+  const { logger } = c.var;
   const token = c.req.param('token');
 
   const callbackUrl = getCookie(c, 'auth_callback_url') ?? '/dashboard';
@@ -61,7 +60,7 @@ magicLinkAuthRouter.get('/:token', async (c) => {
 
     c.header('Set-Cookie', sessionCookie.serialize(), { append: true });
 
-    return c.redirect(callbackUrl);
+    return c.redirect(`${APP_URL}/app${callbackUrl}`);
   } catch (error) {
     logger.error(error);
     return c.text('Invalid or expired token', 400);
