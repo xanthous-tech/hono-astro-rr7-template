@@ -56,6 +56,9 @@ importers:
       stripe:
         specifier: ^17.7.0
         version: 17.7.0
+      tw-animate-css:
+        specifier: ^1.2.4
+        version: 1.2.4
     devDependencies:
       '@astrojs/check':
         specifier: ^0.9.4
@@ -4995,6 +4998,9 @@ packages:
 
   turbo-stream@2.4.0:
     resolution: {integrity: sha512-FHncC10WpBd2eOmGwpmQsWLDoK4cqsA/UT/GqNoaKOQnT8uzhtCbg3EoUDMvqpOSAI0S26mr0rkjzbOO6S3v1g==}
+
+  tw-animate-css@1.2.4:
+    resolution: {integrity: sha512-yt+HkJB41NAvOffe4NweJU6fLqAlVx/mBX6XmHRp15kq0JxTtOKaIw8pVSWM1Z+n2nXtyi7cW6C9f0WG/F/QAQ==}
 
   type-fest@4.37.0:
     resolution: {integrity: sha512-S/5/0kFftkq27FPNye0XM1e2NsnoD/3FS+pBmbjmmtLT6I+i344KoOf7pvXreaFsDamWeaJX55nczA1m5PsBDg==}
@@ -10621,6 +10627,8 @@ snapshots:
       fsevents: 2.3.3
 
   turbo-stream@2.4.0: {}
+
+  tw-animate-css@1.2.4: {}
 
   type-fest@4.37.0: {}
 
