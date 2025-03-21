@@ -1,0 +1,37 @@
+---
+import "~/globals.css";
+
+import { getEntry } from "astro:content";
+
+interface Props {
+  locale?: string;
+  title?: string;
+  description?: string;
+}
+
+const { title, description, locale = "en" } = Astro.props;
+
+// Load i18next translations
+const translation = await getEntry("translations", locale);
+// simple t function
+const t = (key: string, fallback?: string) =>
+  translation?.data?.[key] ?? fallback ?? key;
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta
+      name="description"
+      content={description ?? t("description", t("title"))}
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{(title ? `${title} - ` : "") + t("title")}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

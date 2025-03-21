@@ -1,0 +1,24 @@
+---
+import Layout from "@site/layout/Layout.astro";
+
+import Header from "@site/components/header/Header.astro";
+import Hero from "@site/components/hero/Hero.astro";
+import Footer from "@site/components/Footer.astro";
+
+import { buttonVariants } from "~/components/ui/button";
+
+const locale = "zh";
+---
+
+<Layout locale={locale}>
+  <Header locale={locale} />
+  <Hero
+    tagline="为您提供一个酷炫的产品"
+    description="这是一个酷炫的产品。您可以用它做很多事情。"
+  >
+    <a href="/signin" class={buttonVariants({ variant: "default" })}>
+      开始使用
+    </a>
+  </Hero>
+  <Footer locale={locale} />
+</Layout>

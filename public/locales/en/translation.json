@@ -1,0 +1,21 @@
+{
+  "slug": "en",
+  "home": "Home",
+  "blog": "Blog",
+  "title": "My Product",
+  "signin": "Sign In",
+  "subtitle": "A cool Product for you",
+  "description": "This is a cool product for you. You can use it for many things.",
+  "terms": "Terms of Service",
+  "privacy": "Privacy Policy",
+  "greeting": "Hey there 👋",
+  "signin_prompt": "Please sign in to continue.",
+  "error_occurred": "An error occurred. Please try again.",
+  "magic_link_sent": "We've sent you a magic link to sign in. Please check your email.",
+  "signin_with_email": "Sign in with Email",
+  "or": "or",
+  "signin_with_apple": "Sign in with Apple",
+  "signin_with_github": "Sign in with GitHub",
+  "signin_with_google": "Sign in with Google",
+  "signin_agreement": "By signing in, you agree to our <terms /> and <privacy />."
+}
