@@ -1,6 +1,5 @@
 import { useLayoutEffect } from 'react';
 import { Outlet } from 'react-router';
-import _ from 'lodash';
 
 import { SidebarProvider, SidebarTrigger } from '~/components/ui/sidebar';
 import { Separator } from '~/components/ui/separator';

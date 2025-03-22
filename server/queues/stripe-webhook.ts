@@ -13,6 +13,7 @@ export const stripeWebhookQueue = new Queue<Stripe.Event>(
   defaultQueueOptions,
 );
 
+// @ts-ignore - Stripe.Event type is too complex
 stripeWebhookQueue.on('error', (err) => {
   logger.error(err);
 });

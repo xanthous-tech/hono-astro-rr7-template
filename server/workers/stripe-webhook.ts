@@ -8,6 +8,8 @@ import { defaultWorkerOptions } from '@/lib/bullmq';
 import { subscriptionTable, userTable } from '@/db/schema';
 import { db } from '@/db/drizzle';
 import { stripe } from '@/lib/stripe';
+import { APP_STAGE } from '@/config/server';
+import { STRIPE_PRICE_PLAN_MAPPING } from '@/config/plans';
 
 const logger = parentLogger.child({ worker: STRIPE_WEBHOOK });
 logger.trace(`register worker for queue ${STRIPE_WEBHOOK}`);
@@ -47,9 +49,9 @@ async function stripeWebhookWorkerProcess(job: Job<Stripe.Event>) {
       const updatedUser = await db
         .update(userTable)
         .set({
-          name: checkoutSession.customer_details?.name,
-          email: checkoutSession.customer_details?.email,
-          customerId: checkoutSession.customer as string,
+          name: user.name ?? checkoutSession.customer_details?.name,
+          email: user.email ?? checkoutSession.customer_details?.email,
+          customerId: user.customerId ?? (checkoutSession.customer as string),
         })
         .where(eq(userTable.id, user.id))
         .returning();
@@ -81,9 +83,9 @@ async function stripeWebhookWorkerProcess(job: Job<Stripe.Event>) {
       // create the user subscription in the subscription table, and link the user with customer id here.
       const subscriptionObject = event.data.object as Stripe.Subscription;
 
-      // the metered subscription item is the last item in the subscription items array.
-      const meteredSubscriptionItem =
-        subscriptionObject.items.data.slice(-1)[0];
+      const subscriptionItem = subscriptionObject.items.data[0];
+      const planPriceId = subscriptionItem.plan.id;
+      const plan = STRIPE_PRICE_PLAN_MAPPING[APP_STAGE][planPriceId];
 
       const stripeCustomer = (await stripe.customers.retrieve(
         subscriptionObject.customer as string,
@@ -118,6 +120,7 @@ async function stripeWebhookWorkerProcess(job: Job<Stripe.Event>) {
           userId: user.id,
           customerId: stripeCustomer.id,
           status: subscriptionObject.status,
+          plan,
         })
         .onConflictDoUpdate({
           target: [subscriptionTable.id],
@@ -125,6 +128,8 @@ async function stripeWebhookWorkerProcess(job: Job<Stripe.Event>) {
             userId: user.id,
             customerId: stripeCustomer.id,
             status: subscriptionObject.status,
+            plan,
+            updatedAt: new Date(),
           },
         });
 
@@ -134,6 +139,10 @@ async function stripeWebhookWorkerProcess(job: Job<Stripe.Event>) {
       // update plan status in the subscription table.
 
       const subscriptionObject = event.data.object as Stripe.Subscription;
+
+      const subscriptionItem = subscriptionObject.items.data[0];
+      const planPriceId = subscriptionItem.plan.id;
+      const plan = STRIPE_PRICE_PLAN_MAPPING[APP_STAGE][planPriceId];
 
       const subscriptions = await db
         .select()
@@ -155,6 +164,8 @@ async function stripeWebhookWorkerProcess(job: Job<Stripe.Event>) {
         .update(subscriptionTable)
         .set({
           status,
+          plan,
+          updatedAt: new Date(),
         })
         .where(eq(subscriptionTable.id, subscription.id));
 
@@ -192,6 +203,27 @@ async function stripeWebhookWorkerProcess(job: Job<Stripe.Event>) {
     }
     case 'customer.subscription.deleted': {
       // we can clean up the user subscription in this event.
+      const subscriptionObject = event.data.object as Stripe.Subscription;
+
+      const subscriptions = await db
+        .select()
+        .from(subscriptionTable)
+        .where(eq(subscriptionTable.id, subscriptionObject.id))
+        .limit(1);
+
+      if (subscriptions.length === 0) {
+        // FIXME: we can create a new subscription here, but this should not happen.
+        throw new Error(
+          'subscription not found in the database, this should not happen.',
+        );
+      }
+
+      const subscription = subscriptions[0];
+
+      await db
+        .delete(subscriptionTable)
+        .where(eq(subscriptionTable.id, subscription.id));
+
       break;
     }
     default: {

@@ -53,9 +53,7 @@ export const accountTable = pgTable(
     accessToken: text('access_token'),
     expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }),
   },
-  (t) => ({
-    uniqueOnProvider: unique().on(t.provider, t.providerAccountId),
-  }),
+  (t) => [unique().on(t.provider, t.providerAccountId)],
 );
 
 export type Account = InferSelectModel<typeof accountTable>;

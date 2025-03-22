@@ -1,14 +1,12 @@
 import { and, desc, eq, gt } from 'drizzle-orm';
-import { z } from 'zod';
 
 import { generateIdFromEntropySize } from '@/utils/crypto';
 import { db } from '@/db/drizzle';
-import { magicLinkTokenTable } from '@/db/schema';
-import { magicLinkTokenSchema } from '@/types/magic-link';
+import { magicLinkTokenTable, MagicLinkToken } from '@/db/schema';
 
 export async function getMagicLinkTokenById(
   id: string,
-): Promise<z.infer<typeof magicLinkTokenSchema> | undefined> {
+): Promise<MagicLinkToken | undefined> {
   const magicLinkTokens = await db
     .select()
     .from(magicLinkTokenTable)
@@ -20,7 +18,7 @@ export async function getMagicLinkTokenById(
 
 export async function getMagicTokensByEmail(
   email: string,
-): Promise<z.infer<typeof magicLinkTokenSchema>[]> {
+): Promise<MagicLinkToken[]> {
   const magicLinkTokens = await db
     .select()
     .from(magicLinkTokenTable)

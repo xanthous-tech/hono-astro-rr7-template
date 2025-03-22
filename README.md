@@ -4,17 +4,17 @@ This is a boilerplate for building web applications with [Remix](https://remix.r
 
 ## Overview
 
+- 100% TypeScript
 - Server side tech stack:
   - [x] Hono (for server)
     - [ ] Hono OpenAPI generator
-  - [x] TypeScript
   - [x] Postgres
   - [x] DrizzleORM (to operate Postgres)
   - [x] Redis
   - [x] BullMQ (via Redis)
     - [x] Dashboard (via bull-board)
   - [x] Minio
-  - [x] Auth (via Lucia)
+  - [x] Auth (using Lucia's Best Practices)
   - [x] Stripe
     - [x] Server-side Webhooks
     - [x] Stripe Checkout + Billing Portal
@@ -25,6 +25,8 @@ This is a boilerplate for building web applications with [Remix](https://remix.r
   - [x] TailwindCSS v4
   - [x] shadcn/ui
   - [x] react-router v7
+  - [x] @tanstack/react-query (data fetching)
+  - [x] react-hook-form (form handling)
   - [x] Jotai (state management)
   - [x] Astro v5 (for static content)
     - [x] Landing Page
@@ -38,6 +40,7 @@ This is a boilerplate for building web applications with [Remix](https://remix.r
       - [x] Sitemap
       - [ ] RSS
       - [ ] OpenGraph
+  - [x] internationalization (i18n) (via i18next on both React and Astro)
 - Build system
   - [x] Vite
   - [x] BiomeJS (for linting and formatting)
