@@ -15,6 +15,13 @@
       "when": 1735215642363,
       "tag": "0001_round_charles_xavier",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1742613161786,
+      "tag": "0002_cynical_calypso",
+      "breakpoints": true
     }
   ]
 }

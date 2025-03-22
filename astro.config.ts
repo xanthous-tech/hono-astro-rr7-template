@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
+import cloudflare from '@astrojs/cloudflare';
 import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
@@ -12,6 +13,12 @@ export default defineConfig({
   site: 'https://example.com', // required by sitemap
   srcDir: './site',
   outDir: './static',
+  adapter: cloudflare({
+    imageService: 'compile',
+    platformProxy: {
+      enabled: true,
+    },
+  }),
   vite: {
     ssr: {
       external: ['node:path', 'node:url', 'fs', 'node:fs'],
