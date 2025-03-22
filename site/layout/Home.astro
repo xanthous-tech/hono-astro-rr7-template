@@ -1,0 +1,29 @@
+---
+import Layout from "@site/layout/Layout.astro";
+
+import Header from "@site/components/header/Header.astro";
+import Hero from "@site/components/landing/Hero.astro";
+import Features from "@site/components/landing/Features.astro";
+import Pricing from "@site/components/landing/Pricing.astro";
+import Testimonial from "@site/components/landing/Testimonial.astro";
+import Footer from "@site/components/Footer.astro";
+import CTA from "@site/components/landing/CTA.astro";
+import FAQ from "@site/components/landing/FAQ.astro";
+
+interface Props {
+  locale?: string;
+}
+
+const { locale = "en" } = Astro.props;
+---
+
+<Layout locale={locale}>
+  <Header locale={locale} />
+  <Hero locale={locale} />
+  <Features locale={locale} />
+  <Pricing locale={locale} />
+  <Testimonial locale={locale} />
+  <FAQ locale={locale} />
+  <CTA locale={locale} />
+  <Footer locale={locale} />
+</Layout>

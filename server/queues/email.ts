@@ -13,12 +13,10 @@ const emailQueueEvents = new QueueEvents(EMAIL, defaultQueueEventsOptions);
 
 emailQueue.on('error', (err) => {
   logger.error(err);
-  // Sentry.captureException(err);
 });
 
 emailQueueEvents.on('error', (err) => {
   logger.error(err);
-  // Sentry.captureException(err);
 });
 
 export async function email(payload: EmailJobData) {

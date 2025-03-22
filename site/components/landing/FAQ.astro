@@ -1,0 +1,48 @@
+---
+import { getFixedT } from "@site/utils/i18next";
+import { getLocalizedEntry } from "@site/utils/localized-content";
+
+interface Props {
+  locale?: string;
+}
+
+const { locale = "en" } = Astro.props;
+
+const faq = await getLocalizedEntry("faq", locale);
+
+const t = await getFixedT(locale);
+---
+
+<section
+  id="faq"
+  class="container space-y-8 bg-background py-8 dark:bg-transparent"
+>
+  <div
+    class="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center"
+  >
+    <h2
+      class="flex flex-col lg:flex-row items-center gap-4 font-heading text-2xl font-bold leading-tight tracking-tighter md:text-4xl lg:leading-[1.1]"
+    >
+      {t("landing.faq.title")}
+    </h2>
+  </div>
+  <ul
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start gap-8 mx-auto md:max-w-5xl"
+  >
+    {
+      (faq?.data.faqs ?? []).map((f) => (
+        <li class="flex flex-col items-start space-y-2">
+          <h3 class="text-lg md:text-xl font-bold">{f.question}</h3>
+          <p class="text-lg text-muted-foreground">
+            <Fragment set:html={f.answer} />
+          </p>
+        </li>
+      ))
+    }
+  </ul>
+  <div class="mx-auto text-center md:max-w-[58rem]">
+    <p class="leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+      <Fragment set:html={t("landing.faq.subtitle")} />
+    </p>
+  </div>
+</section>

@@ -1,0 +1,36 @@
+---
+import { SEO, type Props as SEOProps } from "astro-seo";
+
+import { localeCodes } from "~/locales.config";
+
+// import global tailwind + shadcn styles
+import "~/globals.css";
+
+interface Props extends SEOProps {
+  locale?: string;
+}
+---
+
+<!doctype html>
+<html lang={localeCodes[Astro.props.locale ?? "en"]}>
+  <head>
+    <SEO
+      titleDefault={"The Product"}
+      charset="utf-8"
+      {...Astro.props}
+      extend={{
+        meta: [
+          { name: "viewport", content: "width=device-width,initial-scale=1" },
+          ...(Astro.props.extend?.meta ?? []),
+        ],
+        link: [
+          ...(Astro.props.extend?.link ?? []),
+          { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+        ],
+      }}
+    />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

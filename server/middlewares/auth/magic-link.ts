@@ -28,18 +28,18 @@ async function getSessionCookieByMagicLinkToken(token: string) {
   if (users.length === 0) {
     const userId = generateIdFromEntropySize(10);
 
-    const stripeCustomer = await createStripeCustomer(
-      userId,
-      magicLinkToken.email,
-      magicLinkToken.email,
-    );
+    // const stripeCustomer = await createStripeCustomer(
+    //   userId,
+    //   magicLinkToken.email,
+    //   magicLinkToken.email,
+    // );
 
     users = await db
       .insert(userTable)
       .values({
         id: userId,
         email: magicLinkToken.email,
-        customerId: stripeCustomer.id,
+        // customerId: stripeCustomer.id,
       })
       .returning();
   }
@@ -62,6 +62,7 @@ magicLinkAuthRouter.get('/:token', async (c) => {
 
     return c.redirect(`${APP_URL}/app${callbackUrl}`);
   } catch (error) {
+    console.error(error);
     logger.error(error);
     return c.text('Invalid or expired token', 400);
   }

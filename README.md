@@ -22,18 +22,20 @@ This is a boilerplate for building web applications with [Remix](https://remix.r
     - [x] Magic Link / OTP
     - [x] Welcome Email after Subscription
 - Client side tech stack:
-  - [x] TailwindCSS
+  - [x] TailwindCSS v4
   - [x] shadcn/ui
   - [x] react-router v7
-  - [x] Astro (for static content)
+  - [x] Jotai (state management)
+  - [x] Astro v5 (for static content)
     - [x] Landing Page
       - [x] Hero
       - [x] Features
       - [x] Pricing
+      - [x] FAQ
     - [x] Blog
     - [x] Docs (via Starlight)
     - [ ] SEO features
-      - [ ] Sitemap
+      - [x] Sitemap
       - [ ] RSS
       - [ ] OpenGraph
 - Build system

@@ -1,0 +1,19 @@
+[
+  {
+    "id": "en",
+    "features": [
+      {
+        "icon": "Target",
+        "title": "High Accuracy"
+      },
+      {
+        "icon": "Globe",
+        "title": "Multi-Language Support"
+      },
+      {
+        "icon": "Infinity",
+        "title": "Unlimited Usage"
+      }
+    ]
+  }
+]

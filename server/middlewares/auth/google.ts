@@ -95,11 +95,11 @@ async function getSessionCookieFromGoogleUser(googleUser: GoogleUser) {
     const { account, user } = await db.transaction(async (tx) => {
       const userId = generateIdFromEntropySize(10);
 
-      const stripeCustomer = await createStripeCustomer(
-        userId,
-        googleUser.name,
-        googleUser.email,
-      );
+      // const stripeCustomer = await createStripeCustomer(
+      //   userId,
+      //   googleUser.name,
+      //   googleUser.email,
+      // );
 
       const users = await tx
         .insert(userTable)
@@ -108,7 +108,7 @@ async function getSessionCookieFromGoogleUser(googleUser: GoogleUser) {
           name: googleUser.name,
           email: googleUser.email,
           image: googleUser.picture,
-          customerId: stripeCustomer.id,
+          // customerId: stripeCustomer.id,
         })
         .onConflictDoUpdate({
           target: [userTable.email],
@@ -116,7 +116,7 @@ async function getSessionCookieFromGoogleUser(googleUser: GoogleUser) {
             name: googleUser.name,
             email: googleUser.email,
             image: googleUser.picture,
-            customerId: stripeCustomer.id,
+            // customerId: stripeCustomer.id,
           },
         })
         .returning();

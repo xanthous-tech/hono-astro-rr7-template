@@ -1,0 +1,32 @@
+---
+import AppLayout from "@site/layout/AppLayout.astro";
+
+import { Root as AppRoot } from "~/Root";
+
+interface Props {
+  locale?: string;
+}
+
+// TODO: for locale, can use the cookie we store
+
+const { locale = "en" } = Astro.props;
+
+export const prerender = false;
+
+// export function getStaticPaths() {
+//   // this is required in SSG mode
+//   // and the slug param is just for making a path that is a single page
+//   // since Astro SSG builds the page with the path, so using a period works at build time.
+//   // needs to match all the pages that are in the app so the initial rendering works
+//   return [
+//     { params: { slug: "." } },
+//     {
+//       params: { slug: "signin" },
+//     },
+//   ];
+// }
+---
+
+<AppLayout locale={locale}>
+  <AppRoot client:only />
+</AppLayout>

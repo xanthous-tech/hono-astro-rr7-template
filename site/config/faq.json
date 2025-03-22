@@ -1,0 +1,27 @@
+[
+  {
+    "id": "en",
+    "faqs": [
+      {
+        "question": "What is the Product?",
+        "answer": "The Product is"
+      },
+      {
+        "question": "What is the difference between Express and Unlimited plans?",
+        "answer": "difference is that"
+      },
+      {
+        "question": "How much does it cost?",
+        "answer": "It is free"
+      },
+      {
+        "question": "How do I cancel the subscription?",
+        "answer": "You can cancel your subscription at any time by clicking \"Billing\" in the dashboard. You'll have full access to the Product through the end of the current billing period."
+      },
+      {
+        "question": "Who is behind the Product?",
+        "answer": "Hey! I am"
+      }
+    ]
+  }
+]

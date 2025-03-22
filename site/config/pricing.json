@@ -1,0 +1,61 @@
+[
+  {
+    "id": "en",
+    "yearlyPlans": [
+      {
+        "name": "Free",
+        "perMonth": "$0",
+        "cta": "Get Started",
+        "url": "/app",
+        "features": ["Feature A", "Feature B", "Feature C"]
+      },
+      {
+        "name": "Express",
+        "perMonth": "$5",
+        "perMonthLabel": "/ month",
+        "billed": "$60 billed yearly",
+        "saved": "Save 50%",
+        "cta": "Subscribe Now",
+        "ctaVariant": "default",
+        "url": "/app/checkout/express/yearly",
+        "features": ["Feature A", "Feature B", "Feature C"]
+      },
+      {
+        "name": "Unlimited",
+        "perMonth": "$10",
+        "perMonthLabel": "/ month",
+        "billed": "$120 billed yearly",
+        "saved": "Save 50%",
+        "cta": "Subscribe Now",
+        "url": "/app/checkout/standard/yearly",
+        "features": ["Feature A", "Feature B", "Feature C"]
+      }
+    ],
+    "monthlyPlans": [
+      {
+        "name": "Free",
+        "perMonth": "$0",
+        "cta": "Get Started",
+        "url": "/app",
+        "features": ["Feature A", "Feature B", "Feature C"]
+      },
+      {
+        "name": "Express",
+        "perMonth": "$10",
+        "perMonthLabel": "/ month",
+        "cta": "Subscribe Now",
+        "ctaVariant": "default",
+        "url": "/app/checkout/express/monthly",
+        "features": ["Feature A", "Feature B", "Feature C"]
+      },
+      {
+        "name": "Unlimited",
+        "perMonth": "$20",
+        "perMonthLabel": "/ month",
+        "cta": "Subscribe Now",
+        "url": "/app/checkout/standard/monthly",
+        "features": ["Feature A", "Feature B", "Feature C"]
+      }
+    ]
+  }
+]

@@ -17,7 +17,8 @@ async function emailWorkerProcess(job: Job<EmailJobData>) {
 
   switch (emailType) {
     case SUBSCRIBE_SUCCESS: {
-      const subscribeSuccessEmail = await renderSubscribeSuccessEmail();
+      const subscribeSuccessEmail =
+        await renderSubscribeSuccessEmail(emailArgs);
       return subscribeSuccessEmail;
     }
     case MAGIC_LINK: {

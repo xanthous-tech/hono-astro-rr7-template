@@ -1,0 +1,15 @@
+---
+title: FAQ
+description: Frequently asked questions about our Product
+---
+
+import faq from '@site/config/faq.json';
+
+Please find the frequently asked questions below. If there is a question that you have that is not answered here, feel free to reach out to us at [support@example.com](mailto:support@example.com).
+
+{faq.filter((f) => f.id === 'en')?.[0]?.faqs.map((item, index) => (
+  <>
+    <h3>{item.question}</h3>
+    <p set:html={item.answer} />
+  </>
+))}

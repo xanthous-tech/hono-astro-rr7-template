@@ -1,0 +1,22 @@
+[
+  {
+    "id": "en",
+    "items": [
+      {
+        "key": "pricing",
+        "title": "Pricing",
+        "url": "/#pricing"
+      },
+      {
+        "key": "blog",
+        "title": "Blog",
+        "url": "/en/blog"
+      },
+      {
+        "key": "docs",
+        "title": "Docs",
+        "url": "/en/docs"
+      }
+    ]
+  }
+]

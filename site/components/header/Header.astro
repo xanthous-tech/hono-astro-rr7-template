@@ -1,67 +1,87 @@
 ---
-import { getEntry } from "astro:content";
-
-import { defaultLocale } from "@site/utils/locale";
-import { LanguageSwitcher } from "@site/components/LanguageSwitcher";
-
+import { getFixedT } from "@site/utils/i18next";
+import { getLocalizedEntry } from "@site/utils/localized-content";
 import { buttonVariants } from "~/components/ui/button";
+
 import HeaderLink from "./HeaderLink.astro";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { MobileNav } from "./MobileNav";
 
 interface Props {
   locale?: string;
+  signInButtonVariant?: string;
+  hideLanguageSwitcher?: boolean;
 }
 
-const { locale = "en" } = Astro.props;
+const {
+  locale = "en",
+  signInButtonVariant = "default",
+  hideLanguageSwitcher = false,
+} = Astro.props;
 
-const { pathname } = Astro.url;
+let { pathname } = Astro.url;
 
-// Load i18next translations
-const translation = await getEntry("translations", locale);
-// simple t function
-const t = (key: string, fallback?: string) =>
-  translation?.data?.[key] ?? fallback ?? key;
+pathname = pathname.replace(/\/$/, "");
 
-const homePath = locale === defaultLocale ? "/" : `/${locale}`;
-const blogPath = locale === defaultLocale ? "/blog" : `/${locale}/blog`;
+if (pathname === "") {
+  pathname = "/";
+}
 
-const isHomeActive =
-  locale === defaultLocale ? pathname === "/" : pathname === `/${locale}`;
+const nav = await getLocalizedEntry("nav", locale);
 
-const isBlogActive =
-  locale === defaultLocale
-    ? pathname.startsWith("/blog")
-    : pathname.startsWith(`/${locale}/blog`);
+const items = (nav?.data.items ?? []) as {
+  key: string;
+  title: string;
+  url: string;
+  active?: boolean;
+}[];
+
+for (const item of items) {
+  item.active =
+    item.key === "home" ? pathname === item.url : pathname.startsWith(item.url);
+}
+
+const t = await getFixedT(locale);
 ---
 
 <header
   class="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
 >
-  <div class="container flex h-14 max-w-screen-2xl items-center">
+  <div
+    class="container flex h-14 max-w-screen-2xl items-center justify-between"
+  >
     {/* Main Nav */}
-    <div class="mr-4 flex">
-      <a href={homePath} class="mr-6 flex items-center space-x-2">
-        {/* <Icons.logo class="h-6 w-6" /> */}
-        <span class="font-bold inline-block">{t("title")}</span>
-      </a>
+    <div class="hidden md:flex space-x-6">
+      <div class="flex gap-2">
+        <!-- <Icon class="h-6 w-6" /> -->
+        <a href="/" class="font-bold inline-block">{t("title")}</a>
+      </div>
       <nav class="flex items-center gap-6 text-sm">
-        <HeaderLink href={homePath} isActive={isHomeActive}>
-          {t("home")}
-        </HeaderLink>
-        <HeaderLink href={blogPath} isActive={isBlogActive}>
-          {t("blog")}
-        </HeaderLink>
+        {
+          items.map((item) => (
+            <HeaderLink href={item.url} isActive={item.active}>
+              {item.title}
+            </HeaderLink>
+          ))
+        }
       </nav>
     </div>
-    {/* TODO: Mobile Nav */}
-    <div
-      class="flex flex-1 items-center justify-between space-x-2 md:justify-end"
-    >
-      <nav class="flex items-center space-x-2">
-        <LanguageSwitcher client:load />
-        <a href="/signin" class={buttonVariants({ variant: "default" })}>
-          {t("signin")}
-        </a>
-      </nav>
+    {/* Mobile Nav */}
+    <div class="visible md:hidden flex gap-2 items-center">
+      <MobileNav title={t("title")} items={items} client:load />
+      <!-- <Icon class="h-6 w-6" /> -->
+      <a href="/" class="font-bold inline-block">{t("title")}</a>
+    </div>
+    <div class="flex items-center space-x-2">
+      {!hideLanguageSwitcher && <LanguageSwitcher client:load />}
+      <a
+        href="/app"
+        class={buttonVariants({
+          variant: signInButtonVariant as "default" | "destructive",
+        })}
+      >
+        {t("signin")}
+      </a>
     </div>
   </div>
 </header>

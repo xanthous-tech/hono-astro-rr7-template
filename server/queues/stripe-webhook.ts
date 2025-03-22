@@ -15,7 +15,6 @@ export const stripeWebhookQueue = new Queue<Stripe.Event>(
 
 stripeWebhookQueue.on('error', (err) => {
   logger.error(err);
-  // Sentry.captureException(err);
 });
 
 export async function stripeWebhook(event: Stripe.Event) {

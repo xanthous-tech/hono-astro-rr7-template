@@ -1,0 +1,12 @@
+---
+import { LucideIcon } from "./LucideIcon";
+
+interface Props {
+  name: string;
+  class?: string;
+}
+
+const { name, class: className } = Astro.props as Props;
+---
+
+<LucideIcon name={name} className={className} />

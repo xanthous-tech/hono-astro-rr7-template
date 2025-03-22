@@ -1,25 +1,23 @@
 ---
-import { getEntry } from "astro:content";
+import { getFixedT } from "@site/utils/i18next";
 
 interface Props {
   locale?: string;
 }
 
 const { locale = "en" } = Astro.props;
-
-// Load i18next translations
-const translation = await getEntry("translations", locale);
-// simple t function
-const t = (key: string, fallback?: string) =>
-  translation?.data?.[key] ?? fallback ?? key;
+const t = await getFixedT(locale);
 ---
 
 <footer class="w-full">
   <div class="mx-12 p-4 flex justify-between border-t">
     <div class="flex gap-4">
-      <a href="/terms">{t("terms")}</a>
-      <a href="/privacy">{t("privacy")}</a>
+      <a href={`/${locale}/terms`}>{t("terms")}</a>
+      <a href={`/${locale}/privacy`}>{t("privacy")}</a>
     </div>
-    <div>©{new Date().getFullYear()} My Company</div>
+    <div>
+      ©{new Date().getFullYear()}
+      <span>My Company</span>
+    </div>
   </div>
 </footer>

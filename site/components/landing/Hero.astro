@@ -1,0 +1,59 @@
+---
+import { getLocalizedEntry } from "@site/utils/localized-content";
+import { getFixedT } from "@site/utils/i18next";
+
+import { buttonVariants } from "~/components/ui/button";
+import Lucide from "@site/components/icons/Lucide.astro";
+
+interface Props {
+  locale?: string;
+}
+
+const { locale = "en" } = Astro.props;
+
+const heroFeatures = await getLocalizedEntry("heroFeatures", locale);
+
+const t = await getFixedT(locale);
+---
+
+<section
+  class="mx-auto flex max-w-[980px] flex-col items-center gap-2 p-4 md:p-8 md:py-12 md:pb-8"
+>
+  {
+    locale === "en" && (
+      // <a href="#pricing">
+      <span class="rounded-2xl bg-muted px-2 py-1.5 text-xs md:text-sm font-medium">
+        New features!
+      </span>
+      // </a>
+    )
+  }
+  <h1
+    class="text-center text-3xl font-bold leading-tight tracking-tighter md:text-5xl lg:leading-[1.1]"
+  >
+    <Fragment set:html={t("landing.hero.tagline")} />
+  </h1>
+  <div
+    class="max-w-[750px] text-center text-md text-muted-foreground sm:text-lg"
+  >
+    {t("landing.hero.subtitle")}
+  </div>
+  <div
+    class="flex flex-col w-full items-center justify-center space-y-2 py-4 md:pb-10"
+  >
+    <p class="text-sm text-muted-foreground">{t("landing.hero.free_trial")}</p>
+    <a href="/app" class={buttonVariants({ variant: "default" })}>
+      {t("landing.hero.cta")}
+    </a>
+  </div>
+  <div class="mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+    {
+      (heroFeatures?.data.features ?? []).map((feature) => (
+        <div class="flex gap-2 items-center">
+          <Lucide name={feature.icon} class="w-4 h-4" />
+          <span class="text-sm">{feature.title}</span>
+        </div>
+      ))
+    }
+  </div>
+</section>

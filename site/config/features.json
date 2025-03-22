@@ -1,0 +1,15 @@
+[
+  {
+    "id": "en",
+    "features": [
+      {
+        "title": "Focused on Accuracy",
+        "description": "We don't cut corners in our Product. We make sure that every feature is designed to be as accurate as possible."
+      },
+      {
+        "title": "Smooth Experience",
+        "description": "The Product is built by users, for user. We spent hours perfecting the experience so you can spend more time on your work and less time on the tools."
+      }
+    ]
+  }
+]
