@@ -8,7 +8,7 @@ import { Hono } from 'hono';
 import { getCookie } from 'hono/cookie';
 import { eq, and } from 'drizzle-orm';
 
-import { APP_URL, IS_PROD } from '@/config/server';
+import { API_URL, APP_URL, IS_PROD } from '@/config/server';
 import { Cookie } from '@/utils/cookie';
 import { generateIdFromEntropySize } from '@/utils/crypto';
 import { db } from '@/db/drizzle';
@@ -23,7 +23,7 @@ export interface GitHubUser {
 export const github = new GitHub(
   process.env.GITHUB_CLIENT_ID ?? 'invalidClientId',
   process.env.GITHUB_CLIENT_SECRET ?? 'invalidClientSecret',
-  `${APP_URL}/api/auth/github/callback`,
+  `${API_URL}/api/auth/github/callback`,
 );
 
 export const githubAuthRouter = new Hono();
@@ -142,11 +142,11 @@ githubAuthRouter.get('/callback', async (c) => {
 
     const cookie = await getSessionCookieFromGitHubUser(githubUser);
 
-    const callbackUrl = getCookie(c, 'auth_callback_url') ?? '/';
+    const callbackUrl = getCookie(c, 'auth_callback_url') ?? '/dashboard';
 
     c.header('Set-Cookie', cookie.serialize(), { append: true });
 
-    return c.redirect(callbackUrl);
+    return c.redirect(`${APP_URL}/app${callbackUrl}`);
   } catch (e) {
     logger.error(e);
     if (

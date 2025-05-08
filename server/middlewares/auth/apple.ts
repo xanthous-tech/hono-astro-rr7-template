@@ -11,8 +11,9 @@ import { getCookie } from 'hono/cookie';
 import { eq, and } from 'drizzle-orm';
 import { z } from 'zod';
 import { zValidator } from '@hono/zod-validator';
+import _ from 'lodash';
 
-import { APP_URL, IS_PROD } from '@/config/server';
+import { API_URL, APP_URL, IS_PROD } from '@/config/server';
 import { logger as parentLogger } from '@/utils/logger';
 import { generateIdFromEntropySize } from '@/utils/crypto';
 import { Cookie } from '@/utils/cookie';
@@ -42,7 +43,7 @@ export const apple = new Apple(
   process.env.APPLE_TEAM_ID ?? 'invalidTeamId',
   process.env.APPLE_KEY_ID ?? 'invalidKeyId',
   applePrivateKey,
-  `${APP_URL}/api/auth/apple/callback`,
+  `${API_URL}/api/auth/apple/callback`,
 );
 
 export const appleAuthRouter = new Hono();
@@ -207,9 +208,14 @@ appleAuthRouter.post(
 appleAuthRouter.post('/callback', async (c) => {
   const { logger } = c.var;
   const body = await c.req.parseBody();
-  const { code, state, user: userJsonString } = body;
+  const { code, state } = body;
+  let { user: userJsonString } = body;
 
   logger.info(body);
+
+  if (_.isEmpty(userJsonString)) {
+    userJsonString = '{}';
+  }
 
   const user: AppleUser = JSON.parse(userJsonString as string);
 
@@ -228,7 +234,8 @@ appleAuthRouter.post('/callback', async (c) => {
     const callbackUrl = getCookie(c, 'auth_callback_url') ?? '/dashboard';
 
     c.header('Set-Cookie', cookie.serialize(), { append: true });
-    return c.redirect(callbackUrl);
+
+    return c.redirect(`${APP_URL}/app${callbackUrl}`);
   } catch (e) {
     logger.error(e);
     if (
