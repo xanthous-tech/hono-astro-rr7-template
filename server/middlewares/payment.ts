@@ -55,6 +55,7 @@ paymentRouter.get(
       await email({
         emailType: SUBSCRIBE_SUCCESS,
         emailTo: session.customer_email,
+        emailArgs: {},
       });
     }
 
