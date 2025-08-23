@@ -2,29 +2,44 @@ import { useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router';
 
-import { UserAuthForm } from '~/components/UserAuthForm';
-import { useSession } from '~/hooks/session';
+import { useUserInfo } from '~/hooks/api';
 import {
   createCallbackUrlCookie,
   getCallbackUrlFromCookie,
 } from '~/lib/cookies';
 
+import { UserAuthForm } from '~/components/UserAuthForm';
+import { FullPageLoadingState } from '~/components/LoadingStates';
+
 export function SignInPage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { loading, loggedIn } = useSession();
+
+  const { data: user, isLoading } = useUserInfo();
 
   useEffect(() => {
-    if (searchParams.has('callbackUrl')) {
-      createCallbackUrlCookie(searchParams.get('callbackUrl') as string);
-    }
-    if (!loading && loggedIn) {
-      navigate(getCallbackUrlFromCookie() ?? '/dashboard');
-    }
-  }, [loading, loggedIn, searchParams]);
+    let callbackUrl = getCallbackUrlFromCookie();
 
-  return (
+    if (!callbackUrl && searchParams.has('callbackUrl')) {
+      callbackUrl = searchParams.get('callbackUrl') as string;
+      createCallbackUrlCookie(callbackUrl);
+    }
+
+    if (isLoading) {
+      return;
+    }
+
+    if (!user) {
+      return;
+    }
+
+    navigate(callbackUrl ?? '/dashboard');
+  }, [isLoading, user, searchParams]);
+
+  return isLoading ? (
+    <FullPageLoadingState />
+  ) : (
     <div className="min-h-screen">
       <div className="container flex h-screen w-screen flex-col items-center justify-center">
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">

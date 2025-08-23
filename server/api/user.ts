@@ -4,12 +4,14 @@ import { z } from 'zod';
 import { eq } from 'drizzle-orm';
 
 import { MAGIC_LINK } from '@/types/email';
+import { EMAIL_FROM } from '@/types/jobs/email';
 import { API_URL } from '@/config/server';
+import { db } from '@/db/drizzle';
+import { quotaTable, subscriptionTable, User } from '@/db/schema';
+import { createBlankSessionCookie, invalidateUserSessions } from '@/lib/auth';
 import { generateIdFromEntropySize } from '@/utils/crypto';
 import { createMagicToken } from '@/utils/magic-link';
 import { authCheckMiddleware } from '@/middlewares/auth';
-import { db } from '@/db/drizzle';
-import { quotaTable, subscriptionTable, User } from '@/db/schema';
 import { email } from '@/queues/email';
 
 export const userRouter = new Hono()
@@ -29,6 +31,7 @@ export const userRouter = new Hono()
         const token = await createMagicToken(emailTo);
         await email({
           emailType: MAGIC_LINK,
+          emailFrom: EMAIL_FROM,
           emailTo,
           emailArgs: {
             locale: locale ?? 'en',
@@ -42,6 +45,16 @@ export const userRouter = new Hono()
       }
     },
   )
+  .post('/signout', authCheckMiddleware, async (c) => {
+    const user = c.get('user') as User;
+
+    await invalidateUserSessions(user.id);
+    c.header('Set-Cookie', createBlankSessionCookie().serialize(), {
+      append: true,
+    });
+
+    return c.json({ success: true });
+  })
   .get('/info', authCheckMiddleware, async (c) => {
     const user = c.get('user') as User;
 

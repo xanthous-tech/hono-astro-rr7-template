@@ -31,6 +31,15 @@ export function useSignIn() {
   });
 }
 
+export function useSignOut() {
+  return useMutation({
+    mutationFn: async () => {
+      const response = await apiClient.user.signout.$post();
+      return response.json();
+    },
+  });
+};
+
 export function useSubscription() {
   return useQuery<Subscription | null>({
     queryKey: ['subscription'],

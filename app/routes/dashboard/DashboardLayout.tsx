@@ -1,5 +1,7 @@
-import { useLayoutEffect } from 'react';
-import { Outlet } from 'react-router';
+import { useEffect } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router';
+
+import { useUserInfo } from '~/hooks/api';
 
 import { SidebarProvider, SidebarTrigger } from '~/components/ui/sidebar';
 import { Separator } from '~/components/ui/separator';
@@ -7,10 +9,21 @@ import { AppSidebar } from '~/components/dashboard/sidebar/AppSidebar';
 import { DashboardBreadcrumb } from '~/components/dashboard/Breadcrumb';
 
 export function DashboardLayout() {
-  // this is needed because I forced a no-scroll in body on EditorPage
-  useLayoutEffect(() => {
-    document.body.style = '';
-  });
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const { data: user, isLoading } = useUserInfo();
+
+  useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+
+    if (user) {
+      return;
+    }
+
+    navigate(`/signin?callbackUrl=${pathname}`);
+  }, [isLoading, user]);
 
   return (
     <>

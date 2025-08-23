@@ -2,6 +2,7 @@ import { Job, Worker } from 'bullmq';
 
 import { SUBSCRIBE_SUCCESS, MAGIC_LINK } from '@/types/email';
 import { EMAIL, EmailJobData, emailJobDataSchema } from '@/types/jobs/email';
+import { IS_PROD } from '@/config/server';
 import { defaultWorkerOptions } from '@/lib/bullmq';
 import { logger as parentLogger } from '@/utils/logger';
 import { renderSubscribeSuccessEmail } from '@/emails/subscribe-success';
@@ -14,6 +15,10 @@ async function emailWorkerProcess(job: Job<EmailJobData>) {
   const input: EmailJobData = emailJobDataSchema.parse(job.data);
 
   const { emailType, emailTo, emailArgs } = input;
+
+  if (!IS_PROD) {
+    logger.debug(emailArgs);
+  }
 
   switch (emailType) {
     case SUBSCRIBE_SUCCESS: {

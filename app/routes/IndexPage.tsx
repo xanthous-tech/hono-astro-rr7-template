@@ -1,17 +1,26 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
-import { useSession } from '~/hooks/session';
-import { useEffect } from 'react';
+import { useUserInfo } from '~/hooks/api';
+
+import { SmallLoadingState } from '~/components/LoadingStates';
 
 export function IndexPage() {
   const navigate = useNavigate();
-  const { loading, loggedIn } = useSession();
+  const { data: user, isLoading } = useUserInfo();
 
   useEffect(() => {
-    if (!loading && loggedIn) {
-      navigate('/dashboard');
+    if (isLoading) {
+      return;
     }
-  }, [loading, loggedIn]);
 
-  return <div className="container m-8">Loading</div>;
+    if (!user) {
+      navigate('/signin?callbackUrl=/dashboard');
+      return;
+    }
+
+    navigate('/dashboard');
+  }, [isLoading, user]);
+
+  return <SmallLoadingState />;
 }

@@ -1,8 +1,9 @@
+import { useNavigate } from 'react-router';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { ChevronsUpDown, LogOut } from 'lucide-react';
 
-import { useUserInfo } from '~/hooks/api';
-import { useSession } from '~/hooks/session';
+import { useSignOut, useUserInfo } from '~/hooks/api';
 
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import {
@@ -22,9 +23,12 @@ import {
 
 export function NavUser() {
   const { t } = useTranslation();
-  const { data: user } = useUserInfo();
-  const { signOut } = useSession();
+  const navigate = useNavigate();
   const { isMobile } = useSidebar();
+
+  const queryClient = useQueryClient();
+  const { data: user } = useUserInfo();
+  const signOut = useSignOut();
 
   return (
     <SidebarMenu>
@@ -85,7 +89,15 @@ export function NavUser() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => signOut()}>
+            <DropdownMenuItem
+              onClick={async () => {
+                await signOut.mutateAsync();
+                await queryClient.invalidateQueries({
+                  queryKey: ['user'],
+                });
+                navigate('/signin');
+              }}
+            >
               <LogOut />
               {t('app.dashboard.sidebar.sign_out')}
             </DropdownMenuItem>

@@ -20,9 +20,7 @@ const ALMOST_EXPIRE_TIME = new TimeSpan(15, 'd'); // 15 days
 const sessionCookieName = 'auth_session';
 const baseSessionCookieAttributes: CookieAttributes = {
   domain: COOKIE_DOMAIN,
-  // httpOnly sets to false because we want client side to be able to see the session token
-  // FIXME: maybe set up an endpoint to check for auth status and hide the session token
-  httpOnly: false,
+  httpOnly: true,
   secure: true,
   sameSite: 'lax',
   path: '/',
@@ -90,6 +88,10 @@ export async function invalidateSession(sessionId: string): Promise<void> {
 
 export async function getUserSessions(userId: string): Promise<Session[]> {
   return db.select().from(sessionTable).where(eq(sessionTable.userId, userId));
+}
+
+export async function invalidateUserSessions(userId: string): Promise<void> {
+  await db.delete(sessionTable).where(eq(sessionTable.userId, userId));
 }
 
 export async function deleteExpiredSessions(): Promise<void> {

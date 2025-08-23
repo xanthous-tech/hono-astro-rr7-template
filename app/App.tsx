@@ -32,12 +32,12 @@ export function App() {
         <Route index element={<DashboardIndexPage />} />
         <Route path="pricing" element={<DashboardPricingPage />} />
       </Route>
-      <Route
-        path="checkout/canceled/:checkoutId"
-        element={<CheckoutCancelPage />}
-      />
-      <Route path="checkout/success" element={<CheckoutSuccessPage />} />
-      <Route path="checkout/*" element={<CheckoutPage />} />
+      <Route path="checkout">
+        <Route path="canceled/:checkoutId" element={<CheckoutCancelPage />} />
+        <Route path="success" element={<CheckoutSuccessPage />} />
+        <Route index element={<NotFoundPage />} />
+        <Route path="*" element={<CheckoutPage />} />
+      </Route>
       <Route path="signin" element={<SignInPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Route>,

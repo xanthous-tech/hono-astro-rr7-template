@@ -1,5 +1,7 @@
 import { lazy, Suspense } from 'react';
 
+import { FullPageLoadingState } from './components/LoadingStates';
+
 // Dynamically import the App component using React.lazy
 const App = lazy(() =>
   import('./App').then((module) => ({ default: module.App })),
@@ -7,13 +9,7 @@ const App = lazy(() =>
 
 export function Root() {
   return (
-    <Suspense
-      fallback={
-        <div className="container m-8 flex flex-col gap-2">
-          <p>Loading...</p>
-        </div>
-      }
-    >
+    <Suspense fallback={<FullPageLoadingState />}>
       <App />
     </Suspense>
   );

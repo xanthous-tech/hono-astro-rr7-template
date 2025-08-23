@@ -1,19 +1,30 @@
-import { useLocation } from 'react-router';
-
-import { useSession } from '~/hooks/session';
 import { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router';
+
 import { apiUrl } from '~/lib/api';
+import { useUserInfo } from '~/hooks/api';
+
+import { SmallLoadingState } from '~/components/LoadingStates';
 
 export function CheckoutPage() {
   const { pathname } = useLocation();
-  const { loading, loggedIn } = useSession();
+  const navigate = useNavigate();
+
+  const { data: user, isLoading } = useUserInfo();
 
   useEffect(() => {
-    if (!loading && loggedIn) {
-      // external redirect
-      document.location.href = `${apiUrl}/api/payment${pathname}`;
+    if (isLoading) {
+      return;
     }
-  }, [loading, loggedIn]);
 
-  return <div className="container m-8">Redirecting you to Stripe...</div>;
+    if (!user) {
+      navigate(`/signin?callbackUrl=${pathname}`);
+      return;
+    }
+
+    // external redirect
+    document.location.href = `${apiUrl}/api/payment${pathname}`;
+  }, [isLoading, user]);
+
+  return <SmallLoadingState />;
 }
