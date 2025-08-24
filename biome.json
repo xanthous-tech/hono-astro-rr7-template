@@ -1,8 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.5.3/schema.json",
-  "organizeImports": {
-    "enabled": true
-  },
+  "$schema": "https://biomejs.dev/schemas/2.2.2/schema.json",
   "formatter": {
     "indentWidth": 2,
     "indentStyle": "space",
@@ -26,7 +23,6 @@
   },
   "linter": {
     "enabled": true,
-    "ignore": ["src/translate-utils.ts"],
     "rules": {
       "recommended": true,
       "correctness": {
@@ -46,17 +42,5 @@
       }
     }
   },
-  "overrides": [
-    {
-      "include": ["*.astro"],
-      "linter": {
-        "rules": {
-          "style": {
-            "useConst": "off",
-            "useImportType": "off"
-          }
-        }
-      }
-    }
-  ]
+  "overrides": []
 }
